@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Code Assistant</title>
+  <meta name="description" content="AI-powered code analysis and bug fixing assistant. Paste your code, find bugs, and get corrected code instantly." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background Effects -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 3L4 7L8 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 3L20 7L16 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 21L12 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">AI Code Assistant</span>
+          <span class="logo-sub">Powered by AI</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-badge" id="statusBadge">
+          <span class="status-dot"></span>
+          <span class="status-text">Ready</span>
+        </div>
+        <button class="btn-settings" id="settingsBtn" title="API Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M14.83 7.17a6 6 0 0 1 0 9.66M9.17 7.17a6 6 0 0 0 0 9.66M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">⚙️ API Settings</h2>
+        <button class="modal-close" id="closeSettings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">OpenRouter API Key</label>
+          <input type="password" class="form-input" id="apiKeyInput" placeholder="sk-or-v1-..." />
+          <p class="form-hint">Get your free API key from <a href="https://openrouter.ai" target="_blank">openrouter.ai</a></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">AI Model</label>
+          <select class="form-input" id="modelSelect">
+            <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (Free) ⭐</option>
+            <option value="google/gemini-2.0-flash-exp:free">Google Gemini 2.0 Flash (Free)</option>
+            <option value="meta-llama/llama-4-maverick:free">Meta Llama 4 Maverick (Free)</option>
+            <option value="qwen/qwen2.5-coder-32b-instruct:free">Qwen 2.5 Coder 32B (Free)</option>
+            <option value="microsoft/phi-4-reasoning:free">Microsoft Phi-4 Reasoning (Free)</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="saveSettings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-badge">
+          <span class="badge-icon">🤖</span>
+          <span>Intelligent Code Analysis</span>
+        </div>
+        <h1 class="hero-title">Find Bugs. Fix Code. <span class="gradient-text">Instantly.</span></h1>
+        <p class="hero-desc">Paste your code and let AI analyze it for bugs, errors, and improvements — then get the corrected version in seconds.</p>
+      </section>
+
+      <!-- Main Workspace -->
+      <section class="workspace">
+
+        <!-- Input Panel -->
+        <div class="panel input-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <div class="panel-icon input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                </svg>
+              </div>
+              <span class="panel-title">Your Code</span>
+            </div>
+            <div class="panel-actions">
+              <select class="lang-select" id="languageSelect" title="Select programming language">
+                <option value="auto">Auto Detect</option>
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="c">C</option>
+                <option value="cpp">C++</option>
+                <option value="csharp">C#</option>
+                <option value="php">PHP</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="sql">SQL</option>
+                <option value="typescript">TypeScript</option>
+              </select>
+              <button class="icon-btn" id="clearInputBtn" title="Clear code">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="code-editor-wrapper">
+            <div class="line-numbers" id="lineNumbers"></div>
+            <textarea
+              class="code-editor"
+              id="codeInput"
+              placeholder="// Paste your code here...&#10;// Example:&#10;function add(a, b) {&#10;  return a - b; // Bug: should be +&#10;}"
+              spellcheck="false"
+            ></textarea>
+          </div>
+          <div class="panel-footer">
+            <span class="char-count" id="charCount">0 lines</span>
+            <button class="btn-analyze" id="analyzeBtn">
+              <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span>Analyze Code</span>
+              <div class="btn-shine"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Arrow Divider -->
+        <div class="workspace-divider">
+          <div class="divider-arrow" id="dividerArrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <div class="panel-icon output-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="panel-title">Analysis Results</span>
+            </div>
+            <div class="panel-actions" id="outputActions" style="display:none">
+              <button class="icon-btn" id="copyResultBtn" title="Copy result">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="output-content" id="outputContent">
+            <!-- Placeholder State -->
+            <div class="output-placeholder" id="outputPlaceholder">
+              <div class="placeholder-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+              </div>
+              <p class="placeholder-title">Ready to Analyze</p>
+              <p class="placeholder-desc">Paste your code on the left and click <strong>Analyze Code</strong> to get started.</p>
+            </div>
+
+            <!-- Loading State -->
+            <div class="output-loading" id="outputLoading" style="display:none">
+              <div class="loading-animation">
+                <div class="loading-brain">
+                  <div class="brain-pulse"></div>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                  </svg>
+                </div>
+                <p class="loading-text">Analyzing your code...</p>
+                <div class="loading-steps" id="loadingSteps">
+                  <div class="step active" id="step1">🔍 Reading code structure</div>
+                  <div class="step" id="step2">🐛 Detecting bugs & errors</div>
+                  <div class="step" id="step3">🔧 Generating fixed version</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Result State -->
+            <div class="output-result" id="outputResult" style="display:none"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- History Section -->
+      <section class="history-section" id="historySection" style="display:none">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/>
+              <polyline points="3 3 3.05 11 11 11"/>
+            </svg>
+            Recent Analyses
+          </h2>
+          <button class="btn-clear-history" id="clearHistoryBtn">Clear All</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
